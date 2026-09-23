@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 @Injectable()
 export class MediaStorage {
-  private readonly root = path.resolve(process.cwd(), 'storage');
+  private readonly root =
+    process.env.NODE_ENV === 'production'
+      ? path.join(tmpdir(), 'eateat-storage')
+      : path.resolve(process.cwd(), 'storage');
 
   async save(buffer: Buffer, ext: string): Promise<string> {
     await mkdir(this.root, { recursive: true });

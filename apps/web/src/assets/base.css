@@ -1,9 +1,21 @@
 :root {
-  --color-background: #f6f1e8;
-  --color-background-soft: #fffdf8;
-  --color-border: rgba(60, 42, 28, 0.16);
-  --color-heading: #2b2118;
-  --color-text: rgba(43, 33, 24, 0.78);
+  --paper: #fbf3ea;
+  --cream: #fff9f4;
+  --ink: #3c2428;
+  --muted: #7a534c;
+  --line: #c9a297;
+  --brass: #792b3e;
+  --wash: #f6e4de;
+  --danger: #9c342c;
+  --deep: #4e222d;
+  --serif: 'Ma Shan Zheng', 'Songti SC', 'Noto Serif SC', serif;
+  --sans: 'LXGW WenKai', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  --mono: 'Long Cang', 'Ma Shan Zheng', cursive;
+  --color-background: var(--paper);
+  --color-background-soft: var(--cream);
+  --color-border: var(--line);
+  --color-heading: var(--ink);
+  --color-text: var(--muted);
 }
 
 *,
@@ -15,18 +27,37 @@
 body {
   min-height: 100vh;
   margin: 0;
-  color: var(--color-text);
-  background: var(--color-background);
-  font-family:
-    'Segoe UI',
-    'PingFang SC',
-    'Noto Sans SC',
-    sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(232, 180, 176, 0.55), transparent 42%),
+    radial-gradient(ellipse at 100% 10%, rgba(228, 196, 174, 0.65), transparent 38%),
+    var(--paper);
+  font-family: var(--sans);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
 }

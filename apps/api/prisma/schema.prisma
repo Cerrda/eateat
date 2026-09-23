@@ -1,4 +1,4 @@
-// Domain models land here with each feature. Connection URL lives in prisma.config.ts.
+// Domain models for the private kitchen. Connection URL lives in prisma.config.ts.
 
 generator client {
   provider = "prisma-client"
@@ -7,4 +7,217 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model Member {
+  id          String       @id @default(cuid())
+  clientKey   String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  sessions    Session[]
+  memberships Membership[]
+
+  @@index([createdAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([memberId])
+}
+
+model Kitchen {
+  id          String         @id @default(cuid())
+  status      KitchenStatus  @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  memberships Membership[]
+  invites     Invite[]
+  dishes      Dish[]
+  orders      MealOrder[]
+  records     MealRecord[]
+
+  @@index([status])
+}
+
+model Membership {
+  id              String    @id @default(cuid())
+  kitchenId       String
+  memberId        String
+  role            Role
+  displayName     String
+  ordersSeenAt    DateTime  @default(now())
+  recordsSeenAt   DateTime  @default(now())
+  leftAt          DateTime?
+  activeMemberKey String?   @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  kitchen         Kitchen   @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  member          Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([kitchenId, leftAt])
+  @@index([memberId, leftAt])
+}
+
+model Invite {
+  id        String    @id @default(cuid())
+  kitchenId String
+  code      String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  kitchen   Kitchen   @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+
+  @@index([kitchenId, revokedAt])
+}
+
+model Dish {
+  id              String         @id @default(cuid())
+  kitchenId       String
+  name            String
+  summary         String         @default("")
+  ingredients     String         @default("")
+  steps           Json           @default("[]")
+  durationMinutes Int?
+  servings        String         @default("")
+  coverPath       String?
+  sourceUrl       String?
+  status          DishStatus     @default(DRAFT)
+  publishedAt     DateTime?
+  deletedAt       DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  kitchen         Kitchen        @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  covers          CoverAttempt[]
+  orderItems      OrderItem[]
+  recordDishes    RecordDish[]
+
+  @@index([kitchenId, status, deletedAt])
+  @@index([kitchenId, publishedAt])
+}
+
+model CoverAttempt {
+  id        String      @id @default(cuid())
+  dishId    String
+  imagePath String?
+  status    CoverStatus
+  adopted   Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  dish      Dish        @relation(fields: [dishId], references: [id], onDelete: Cascade)
+
+  @@index([dishId, createdAt])
+}
+
+model MealOrder {
+  id            String      @id @default(cuid())
+  kitchenId     String
+  mealDate      String
+  slot          MealSlot
+  note          String      @default("")
+  status        OrderStatus
+  message       String      @default("")
+  actorRole     Role?
+  activeSlotKey String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  completedAt   DateTime?
+  kitchen       Kitchen     @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  items         OrderItem[]
+  record        MealRecord?
+
+  @@index([kitchenId, mealDate, slot])
+  @@index([kitchenId, status, updatedAt])
+}
+
+model OrderItem {
+  id            String    @id @default(cuid())
+  orderId       String
+  dishId        String?
+  nameSnapshot  String
+  coverSnapshot String?
+  sortOrder     Int
+  order         MealOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  dish          Dish?     @relation(fields: [dishId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([dishId])
+}
+
+model MealRecord {
+  id        String        @id @default(cuid())
+  kitchenId String
+  orderId   String?       @unique
+  mealDate  String
+  slot      MealSlot
+  body      String        @default("")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+  kitchen   Kitchen       @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  order     MealOrder?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  photos    RecordPhoto[]
+  dishes    RecordDish[]
+
+  @@index([kitchenId, mealDate, deletedAt])
+}
+
+model RecordPhoto {
+  id        String     @id @default(cuid())
+  recordId  String
+  path      String
+  sortOrder Int
+  record    MealRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+
+  @@index([recordId])
+}
+
+model RecordDish {
+  id           String     @id @default(cuid())
+  recordId     String
+  dishId       String?
+  nameSnapshot String
+  record       MealRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  dish         Dish?      @relation(fields: [dishId], references: [id], onDelete: SetNull)
+
+  @@index([recordId])
+}
+
+enum KitchenStatus {
+  PENDING
+  BOUND
+  DISSOLVED
+}
+
+enum Role {
+  COOKER
+  EATER
+}
+
+enum DishStatus {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum CoverStatus {
+  READY
+  FAILED
+}
+
+enum MealSlot {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  REJECTED
+  CANCELLED
 }

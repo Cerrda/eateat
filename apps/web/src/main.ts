@@ -4,7 +4,10 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
+import { registerGsap } from './lib/motion'
 import router from './router'
+
+registerGsap()
 
 const app = createApp(App)
 

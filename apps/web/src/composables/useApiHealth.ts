@@ -1,4 +1,5 @@
 import { computed, onMounted, readonly, shallowRef } from 'vue'
+import { apiUrl } from '@/api/client'
 
 export type ProbeState = 'checking' | 'up' | 'down'
 
@@ -40,11 +41,6 @@ export function useApiHealth() {
     summary,
     refresh,
   }
-}
-
-function apiUrl(path: string): string {
-  const base = import.meta.env.VITE_API_BASE_URL ?? ''
-  return `${base}${path}`
 }
 
 async function probe(path: string): Promise<ProbeState> {

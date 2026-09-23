@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { api, ApiError } from '@/api/client'
+import { api, apiUrl, ApiError } from '@/api/client'
 import type { MealRecord } from '@/api/types'
 import ScreenShell from '@/components/shell/ScreenShell.vue'
 import { dateLabel } from '@/lib/dates'
@@ -75,7 +75,7 @@ async function remove() {
   >
     <p class="lede enter-item">{{ record.dishes.map((dish) => dish.name).join('、') }}</p>
     <div class="photo-grid enter-item">
-      <img v-for="photo in kept" :key="photo.id" :src="photo.path" alt="" @click="cooker && drop(photo.id)" />
+      <img v-for="photo in kept" :key="photo.id" :src="apiUrl(photo.path)" alt="" @click="cooker && drop(photo.id)" />
     </div>
     <p v-if="cooker" class="quiet">点一下照片可以拿掉，再保存。</p>
     <textarea v-if="cooker" v-model="body" class="area" maxlength="300"></textarea>

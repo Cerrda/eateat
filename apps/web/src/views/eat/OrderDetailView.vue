@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
-import { api, ApiError } from '@/api/client'
+import { api, apiUrl, ApiError } from '@/api/client'
 import type { MealOrder } from '@/api/types'
 import NoteSheet from '@/components/kitchen/NoteSheet.vue'
 import ScreenShell from '@/components/shell/ScreenShell.vue'
@@ -48,7 +48,7 @@ async function cancel(message: string) {
     <p v-if="fresh" class="banner enter-item">对方打开 EatEat 后，会在待做里看到。</p>
     <p class="meta">{{ ORDER_LABEL[order.status] }}</p>
     <div class="covers">
-      <img v-for="item in order.items" :key="item.id" class="cover" :src="item.coverPath || ''" alt="" />
+      <img v-for="item in order.items" :key="item.id" class="cover" :src="apiUrl(item.coverPath || '')" alt="" />
     </div>
     <p class="lede">{{ order.items.map((item) => item.name).join('、') }}</p>
     <p v-if="order.note" class="quiet">备注：{{ order.note }}</p>

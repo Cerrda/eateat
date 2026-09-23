@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
-import { api, ApiError } from '@/api/client'
+import { api, apiUrl, ApiError } from '@/api/client'
 import type { Dish, DishStatus } from '@/api/types'
 import ScreenShell from '@/components/shell/ScreenShell.vue'
 import { classifyRecipeUrl } from '@/lib/links'
@@ -99,7 +99,7 @@ function writeInstead() {
         @click="router.push({ name: 'dish-edit', params: { id: dish.id } })"
       >
         <span class="spread">
-          <img v-if="dish.coverPath" class="cover" :src="dish.coverPath" alt="" />
+          <img v-if="dish.coverPath" class="cover" :src="apiUrl(dish.coverPath)" alt="" />
           <span>
             <strong class="dish-name">{{ dish.name }}</strong>
             <span class="quiet">{{ DISH_LABEL[dish.status] }}</span>

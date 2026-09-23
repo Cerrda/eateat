@@ -11,6 +11,14 @@ export class ApiError extends Error {
   }
 }
 
+export function apiUrl(path: string): string {
+  if (!path) return ''
+  if (/^https?:\/\//.test(path)) return path
+  const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+  const suffix = path.startsWith('/') ? path : `/${path}`
+  return `${base}${suffix}`
+}
+
 let authToken = ''
 
 export function setApiAuth(token: string) {
@@ -27,7 +35,7 @@ export async function api<T>(
 
   let response: Response
   try {
-    response = await fetch(path, {
+    response = await fetch(apiUrl(path), {
       method: options.method ?? (options.body === undefined ? 'GET' : 'POST'),
       headers,
       body: options.body === undefined ? undefined : JSON.stringify(options.body),

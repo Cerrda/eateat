@@ -10,8 +10,13 @@ export function configureApp(app: INestApplication): void {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
+  const webOrigin = config.getOrThrow<string>('app.webOrigin');
+  const origins = webOrigin
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
   app.enableCors({
-    origin: config.getOrThrow<string>('app.webOrigin'),
+    origin: origins.includes('*') ? true : origins,
     credentials: true,
   });
   app.useGlobalPipes(

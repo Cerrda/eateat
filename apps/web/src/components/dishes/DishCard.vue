@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { apiUrl } from '@/api/client'
 import type { MenuDish } from '@/api/types'
 
 defineProps<{
@@ -15,7 +16,7 @@ defineEmits<{
 <template>
   <article class="row-card reveal-card">
     <button class="spread" type="button" @click="$emit('open')">
-      <img v-if="dish.coverPath" class="cover" :src="dish.coverPath" alt="" />
+      <img v-if="dish.coverPath" class="cover" :src="apiUrl(dish.coverPath)" alt="" />
       <span v-else class="cover"></span>
       <span>
         <strong class="dish-name">{{ dish.name }}</strong>

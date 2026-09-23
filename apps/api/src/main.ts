@@ -11,7 +11,7 @@ async function bootstrap(): Promise<void> {
   configureApp(app);
 
   const config = app.get(ConfigService);
-  await app.listen(config.getOrThrow<number>('app.port'));
+  await app.listen(config.getOrThrow<number>('app.port'), '0.0.0.0');
 }
 
 await bootstrap();

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { apiUrl } from '@/api/client'
 import type { MealOrder } from '@/api/types'
 import { dateLabel } from '@/lib/dates'
 import { ORDER_LABEL, SLOT_LABEL } from '@/lib/labels'
@@ -15,7 +16,7 @@ defineEmits<{ open: [] }>()
       <span class="meta">{{ ORDER_LABEL[order.status] }}</span>
     </span>
     <span class="covers">
-      <img v-for="item in order.items" :key="item.id" class="cover" :src="item.coverPath || ''" alt="" />
+      <img v-for="item in order.items" :key="item.id" class="cover" :src="apiUrl(item.coverPath || '')" alt="" />
     </span>
     <span class="quiet">{{ order.items.map((item) => item.name).join('、') }}</span>
   </button>

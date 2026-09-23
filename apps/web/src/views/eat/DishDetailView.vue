@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
-import { api } from '@/api/client'
+import { api, apiUrl } from '@/api/client'
 import type { MenuDish } from '@/api/types'
 import ScreenShell from '@/components/shell/ScreenShell.vue'
 import { useMealStore } from '@/stores/meal'
@@ -19,7 +19,7 @@ onMounted(async () => {
 
 <template>
   <ScreenShell v-if="dish" :title="dish.name" :back="{ name: 'menu' }">
-    <img v-if="dish.coverPath" class="cover-lg enter-item" :src="dish.coverPath" alt="" />
+    <img v-if="dish.coverPath" class="cover-lg enter-item" :src="apiUrl(dish.coverPath)" alt="" />
     <p class="quiet enter-item">
       <template v-if="dish.durationMinutes">{{ dish.durationMinutes }} 分钟</template>
       <template v-if="dish.servings"> · {{ dish.servings }}</template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
-import { api, ApiError } from '@/api/client'
+import { api, apiUrl, ApiError } from '@/api/client'
 import type { MealOrder, MenuDish } from '@/api/types'
 import ScreenShell from '@/components/shell/ScreenShell.vue'
 import { dateLabel } from '@/lib/dates'
@@ -60,7 +60,7 @@ async function submit() {
     :back="{ name: 'menu' }"
   >
     <article v-for="dish in chosen" :key="dish.id" class="spread enter-item">
-      <img v-if="dish.coverPath" class="cover" :src="dish.coverPath" alt="" />
+      <img v-if="dish.coverPath" class="cover" :src="apiUrl(dish.coverPath)" alt="" />
       <span class="dish-name">{{ dish.name }}</span>
     </article>
     <label class="field-label enter-item">

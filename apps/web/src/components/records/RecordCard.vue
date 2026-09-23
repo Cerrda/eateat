@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { apiUrl } from '@/api/client'
 import type { MealRecord } from '@/api/types'
 import { dateLabel } from '@/lib/dates'
 import { SLOT_LABEL } from '@/lib/labels'
@@ -10,7 +11,7 @@ defineEmits<{ open: [] }>()
 <template>
   <button class="row-card reveal-card" type="button" @click="$emit('open')">
     <span class="kicker">{{ dateLabel(record.mealDate) }} · {{ SLOT_LABEL[record.slot] }}</span>
-    <img v-if="record.photos[0]" class="cover" :src="record.photos[0].path" alt="" />
+    <img v-if="record.photos[0]" class="cover" :src="apiUrl(record.photos[0].path)" alt="" />
     <span class="dish-name">{{ record.dishes.map((dish) => dish.name).join('、') || '这一餐' }}</span>
     <span class="quiet">{{ record.body }}</span>
   </button>

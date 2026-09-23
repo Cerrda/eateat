@@ -9,6 +9,7 @@ process.env.DATABASE_URL = db.url;
 process.env.PORT = String(service.port());
 process.env.WEB_ORIGIN = webOrigin;
 process.env.NODE_ENV = 'production';
+process.env.EATEAT_STORAGE_DIR = '/tmp/eateat-storage';
 
 const client = new pg.Client({ connectionString: db.url });
 await client.connect();

@@ -135,7 +135,8 @@ export class DishService {
       const imagePath = await this.media.save(Buffer.from(svg), 'svg');
       const attempt = await this.dishes.addCover(id, 'READY', imagePath);
       return { ...attempt, coversRemaining: Math.max(0, 4 - used) };
-    } catch {
+    } catch (error) {
+      console.error('cover-generate-failed', error);
       const attempt = await this.dishes.addCover(id, 'FAILED', null);
       return { ...attempt, coversRemaining: Math.max(0, 4 - used) };
     }

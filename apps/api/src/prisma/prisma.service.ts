@@ -7,12 +7,32 @@ import { databaseConfig } from '../config/database.config.js';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleDestroy {
   constructor(@Inject(databaseConfig.KEY) database: ConfigType<typeof databaseConfig>) {
-    const adapter = new PrismaPg({
-      connectionString: database.url,
-      max: 1,
-      idleTimeoutMillis: 10_000,
+    const adapter = new PrismaPg(
+      {
+        connectionString: database.url,
+        max: 4,
+        connectionTimeoutMillis: 8_000,
+        idleTimeoutMillis: 10_000,
+        query_timeout: 8_000,
+        statement_timeout: 8_000,
+        keepAlive: true,
+      },
+      {
+        onPoolError: (error) => {
+          console.error('database-pool-error', error);
+        },
+        onConnectionError: (error) => {
+          console.error('database-connection-error', error);
+        },
+      },
+    );
+    super({
+      adapter,
+      transactionOptions: {
+        maxWait: 4_000,
+        timeout: 8_000,
+      },
     });
-    super({ adapter });
   }
 
   async onModuleDestroy(): Promise<void> {

@@ -12,7 +12,7 @@ async function choose(slot: 'alpha' | 'beta') {
 </script>
 
 <template>
-  <div v-if="session.wechat" class="dev-dock">
+  <div class="dev-dock">
     <button type="button" :disabled="session.slot === 'alpha'" @click="choose('alpha')">身份甲</button>
     <button type="button" :disabled="session.slot === 'beta'" @click="choose('beta')">身份乙</button>
   </div>

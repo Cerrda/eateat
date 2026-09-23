@@ -15,7 +15,6 @@ function readSlot(): SlotName {
 }
 
 export const useSessionStore = defineStore('session', () => {
-  const wechat = shallowRef(false)
   const token = shallowRef('')
   const profile = shallowRef<Profile | null>(null)
   const ready = shallowRef(false)
@@ -27,7 +26,7 @@ export const useSessionStore = defineStore('session', () => {
   const bound = computed(() => membership.value?.kitchenStatus === 'BOUND')
 
   function syncAuth() {
-    setApiAuth(token.value, wechat.value)
+    setApiAuth(token.value)
   }
 
   function landing(): RouteLocationRaw {
@@ -44,13 +43,10 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   async function load() {
-    const realWechat = navigator.userAgent.includes('MicroMessenger')
-    const simulated = import.meta.env.DEV && localStorage.getItem('eateat-wechat') === '1'
-    wechat.value = realWechat || simulated
     slot.value = readSlot()
     token.value = localStorage.getItem(storageKey(slot.value, 'token')) ?? ''
     syncAuth()
-    if (wechat.value) await openSession()
+    await openSession()
     ready.value = true
   }
 
@@ -65,7 +61,6 @@ export const useSessionStore = defineStore('session', () => {
       const session = await api<{ token: string }>('/api/v1/auth/session', {
         method: 'POST',
         body: { clientKey: key },
-        wechat: true,
       })
       token.value = session.token
       localStorage.setItem(storageKey(slot.value, 'token'), session.token)
@@ -89,14 +84,6 @@ export const useSessionStore = defineStore('session', () => {
   async function refresh() {
     syncAuth()
     profile.value = await api<Profile>('/api/v1/me')
-  }
-
-  async function enableWechat() {
-    localStorage.setItem('eateat-wechat', '1')
-    wechat.value = true
-    ready.value = false
-    booting = null
-    await boot()
   }
 
   async function switchSlot(next: SlotName) {
@@ -142,7 +129,6 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   return {
-    wechat,
     token,
     profile,
     ready,
@@ -153,7 +139,6 @@ export const useSessionStore = defineStore('session', () => {
     landing,
     boot,
     refresh,
-    enableWechat,
     switchSlot,
     createKitchen,
     refreshInvite,

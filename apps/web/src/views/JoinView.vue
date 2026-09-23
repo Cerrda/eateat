@@ -87,7 +87,7 @@ async function join(abandon = false) {
       <button class="btn" type="button" data-press @click="preview = null">再试一次</button>
     </div>
     <div v-else-if="preview.kind === 'already'" class="stack">
-      <p class="lede">一个微信只能待在一间厨房里。这条邀请不会切换，也不会覆盖现在这间。</p>
+      <p class="lede">一个人只能待在一间厨房里。这条邀请不会切换，也不会覆盖现在这间。</p>
       <button class="btn" type="button" data-press @click="router.push(session.landing())">回到我的厨房</button>
     </div>
     <div v-else class="stack">

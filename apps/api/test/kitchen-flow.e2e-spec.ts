@@ -26,11 +26,6 @@ describe('kitchen flow', () => {
     const server = app.getHttpServer();
     const stamp = Date.now().toString(36);
 
-    const blocked = await request(server)
-      .post('/api/v1/auth/session')
-      .send({ clientKey: `cooker${stamp}key0001` });
-    expect(blocked.status).toBe(403);
-
     const cookerToken = await openSession(server, `cooker${stamp}key0001`);
     const eaterToken = await openSession(server, `eater${stamp}key00001`);
 
@@ -185,7 +180,6 @@ function auth(token: string) {
 async function openSession(server: App, clientKey: string) {
   const response = await request(server)
     .post('/api/v1/auth/session')
-    .set('x-eateat-wechat', '1')
     .send({ clientKey });
   expect(response.status).toBe(201);
   return response.body.token as string;

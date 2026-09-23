@@ -12,21 +12,18 @@ export class ApiError extends Error {
 }
 
 let authToken = ''
-let wechatHeader = false
 
-export function setApiAuth(token: string, wechat: boolean) {
+export function setApiAuth(token: string) {
   authToken = token
-  wechatHeader = wechat
 }
 
 export async function api<T>(
   path: string,
-  options: { method?: string; body?: unknown; wechat?: boolean } = {},
+  options: { method?: string; body?: unknown } = {},
 ): Promise<T> {
   const headers = new Headers()
   if (options.body !== undefined) headers.set('content-type', 'application/json')
   if (authToken) headers.set('authorization', `Bearer ${authToken}`)
-  if (wechatHeader || options.wechat) headers.set('x-eateat-wechat', '1')
 
   let response: Response
   try {

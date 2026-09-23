@@ -9,8 +9,8 @@ const router = createRouter({
       path: '/',
       component: KitchenLayout,
       children: [
-        { path: '', name: 'root', redirect: { name: 'gate' } },
-        { path: 'open', name: 'gate', component: () => import('@/views/GateView.vue') },
+        { path: '', name: 'root', redirect: { name: 'start' } },
+        { path: 'open', redirect: { name: 'start' } },
         {
           path: 'start',
           name: 'start',
@@ -144,9 +144,6 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const session = useSessionStore()
   await session.boot()
-
-  if (!session.wechat) return to.name === 'gate' ? true : { name: 'gate' }
-  if (to.name === 'gate' || to.name === 'root') return session.landing()
 
   const membership = session.membership
   if (!membership) {

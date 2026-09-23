@@ -20,3 +20,5 @@ apps/api/storage
 *.njsproj
 *.sln
 *.sw?
+
+.prisma-composer

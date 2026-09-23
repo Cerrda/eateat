@@ -1,0 +1,20 @@
+{
+  "name": "eateat",
+  "private": true,
+  "packageManager": "pnpm@11.5.2",
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @eateat/api --filter @eateat/web dev",
+    "dev:api": "pnpm --filter @eateat/api dev",
+    "dev:web": "pnpm --filter @eateat/web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:generate": "pnpm --filter @eateat/api db:generate",
+    "db:migrate": "pnpm --filter @eateat/api db:migrate"
+  }
+}

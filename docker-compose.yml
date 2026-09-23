@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: eateat-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: eateat
+      POSTGRES_PASSWORD: eateat
+      POSTGRES_DB: eateat
+    volumes:
+      - eateat-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eateat -d eateat"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  eateat-postgres:

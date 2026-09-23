@@ -22,3 +22,5 @@ apps/api/storage
 *.sw?
 
 .prisma-composer
+.vercel
+.alchemy
